@@ -54,8 +54,7 @@ func solution(maxCratesAtOnce int) {
 
 	// now we have our stacks
 
-	// time to read + follow the instructions
-
+	// read instructions & perform moves
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
 		split := strings.Split(line, " ")
@@ -69,13 +68,14 @@ func solution(maxCratesAtOnce int) {
 		destStackIdx -= 1
 		// fmt.Printf("need to move %d crate(s)\n", numCratesToMove)
 
+		// determine how many crates to move at once
+		numCratesToMoveAtOnce := 1
+		if maxCratesAtOnce == 0 {
+			numCratesToMoveAtOnce = numCratesToMove
+		}
+
 		// do the moves
-		for i := 0; i < numCratesToMove; i += maxCratesAtOnce {
-			numCratesToMoveAtOnce := maxCratesAtOnce
-			fmt.Printf("%d left to move\n", numCratesToMove-i)
-			if numCratesToMove-i < maxCratesAtOnce {
-				numCratesToMoveAtOnce = numCratesToMove - i
-			}
+		for i := 0; i < numCratesToMove; i += numCratesToMoveAtOnce {
 			fmt.Printf("moving %d from %d to %d\n", numCratesToMoveAtOnce, sourceStackIdx, destStackIdx)
 			fmt.Printf("moving %d crate(s)\n", numCratesToMoveAtOnce)
 			sourceStack := stacks[sourceStackIdx]
@@ -91,7 +91,7 @@ func solution(maxCratesAtOnce int) {
 			stacks[destStackIdx] = cratesToMove
 			// fmt.Printf("dest after: %s\n", stacks[destStackIdx])
 			// fmt.Printf("source after3: %s\n", stacks[sourceStackIdx])
-			fmt.Printf("%s\n", stacks)
+			// fmt.Printf("%s\n", stacks)
 		}
 
 	}
@@ -102,12 +102,12 @@ func solution(maxCratesAtOnce int) {
 	for i := 0; i < len(stacks); i++ {
 		res += string(stacks[i][0])
 	}
-	fmt.Printf("%s\n", stacks)
+	// fmt.Printf("%s\n", stacks)
 
-	fmt.Printf("solution result: %s\n", res)
+	fmt.Printf("result: %s\n", res)
 }
 
 func main() {
-	// pass 1 for p1, 3 for p2
-	solution(3)
+	// pass 1 for p1, 0 for p2
+	solution(0)
 }
