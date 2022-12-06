@@ -79,7 +79,7 @@ func p2() {
 	}
 	readFile.Close()
 
-	fmt.Printf("p1 result: %d\n", sum)
+	fmt.Printf("p2 result: %d\n", sum)
 }
 
 func main() {
