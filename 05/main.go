@@ -19,7 +19,7 @@ func makeFromSlice(sl []byte) []byte {
 	return result
 }
 
-func p1(maxCratesAtOnce int) {
+func solution(maxCratesAtOnce int) {
 	readFile, _ := os.Open("data.txt")
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
@@ -104,9 +104,10 @@ func p1(maxCratesAtOnce int) {
 	}
 	fmt.Printf("%s\n", stacks)
 
-	fmt.Printf("p1 result: %s\n", res)
+	fmt.Printf("solution result: %s\n", res)
 }
 
 func main() {
-	p1(3)
+	// pass 1 for p1, 3 for p2
+	solution(3)
 }
