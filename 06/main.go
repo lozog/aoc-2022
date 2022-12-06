@@ -26,7 +26,7 @@ func allUniqueChars(s string) bool {
 	return true
 }
 
-func p1() {
+func solution(windowLength int) {
 	readFile, _ := os.Open("data.txt")
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
@@ -37,11 +37,11 @@ func p1() {
 
 		for i := range line {
 			// fmt.Println(i)
-			endOfWindow := min(len(line)-1, i+4)
+			endOfWindow := min(len(line)-1, i+windowLength)
 			window := line[i:endOfWindow]
 			// fmt.Println(window)
 			if allUniqueChars(window) {
-				fmt.Printf("p1 result: %d\n", endOfWindow)
+				fmt.Printf("result: %d\n", endOfWindow)
 				break
 			}
 
@@ -50,5 +50,6 @@ func p1() {
 }
 
 func main() {
-	p1()
+	solution(4)  // p1
+	solution(14) // p2
 }
