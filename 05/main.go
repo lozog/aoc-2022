@@ -12,7 +12,14 @@ func isLetter(a byte) bool {
 	return int(a) >= int('A') && int(a) <= int('Z')
 }
 
-func p1() {
+// https://stackoverflow.com/questions/35276022/unexpected-slice-append-behaviour
+func makeFromSlice(sl []byte) []byte {
+	result := make([]byte, len(sl))
+	copy(result, sl)
+	return result
+}
+
+func p1(maxCratesAtOnce int) {
 	readFile, _ := os.Open("data.txt")
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
@@ -60,21 +67,32 @@ func p1() {
 		// stacks are counted in inputs starting at 1, but we'll be using them as slice indices
 		sourceStackIdx -= 1
 		destStackIdx -= 1
+		// fmt.Printf("need to move %d crate(s)\n", numCratesToMove)
 
 		// do the moves
-		for i := 0; i < numCratesToMove; i++ {
-			sourceStack := &stacks[sourceStackIdx]
-			// fmt.Printf("source before: %s\n", *sourceStack)
-			crateToMove := (*sourceStack)[0]
-			*sourceStack = (*sourceStack)[1:]
-			// fmt.Printf("source after: %s\n", *sourceStack)
-			destStack := &stacks[destStackIdx]
-			// fmt.Printf("dest before: %s\n", *destStack)
-			*destStack = append([]byte{crateToMove}, *destStack...)
-			// fmt.Printf("dest after: %s\n", *destStack)
-			// fmt.Println()
+		for i := 0; i < numCratesToMove; i += maxCratesAtOnce {
+			numCratesToMoveAtOnce := maxCratesAtOnce
+			fmt.Printf("%d left to move\n", numCratesToMove-i)
+			if numCratesToMove-i < maxCratesAtOnce {
+				numCratesToMoveAtOnce = numCratesToMove - i
+			}
+			fmt.Printf("moving %d from %d to %d\n", numCratesToMoveAtOnce, sourceStackIdx, destStackIdx)
+			fmt.Printf("moving %d crate(s)\n", numCratesToMoveAtOnce)
+			sourceStack := stacks[sourceStackIdx]
+			// fmt.Printf("source before: %s\n", stacks[sourceStackIdx])
+			cratesToMove := sourceStack[0:numCratesToMoveAtOnce]
+			// fmt.Printf("crates to move: %s\n", cratesToMove)
+			stacks[sourceStackIdx] = sourceStack[numCratesToMoveAtOnce:]
+			// fmt.Printf("source after: %s\n", stacks[sourceStackIdx])
+			// fmt.Printf("dest before: %s\n", stacks[destStackIdx])
+			// fmt.Printf("source after1: %s\n", stacks[sourceStackIdx])
+			cratesToMove = append(makeFromSlice(cratesToMove), stacks[destStackIdx]...) // oh my god Golang why
+			// fmt.Printf("source after2: %s\n", stacks[sourceStackIdx])
+			stacks[destStackIdx] = cratesToMove
+			// fmt.Printf("dest after: %s\n", stacks[destStackIdx])
+			// fmt.Printf("source after3: %s\n", stacks[sourceStackIdx])
+			fmt.Printf("%s\n", stacks)
 		}
-		// fmt.Println()
 
 	}
 	readFile.Close()
@@ -90,5 +108,5 @@ func p1() {
 }
 
 func main() {
-	p1()
+	p1(3)
 }
