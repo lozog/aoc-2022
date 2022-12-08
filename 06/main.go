@@ -47,6 +47,7 @@ func solution(windowLength int) {
 
 		}
 	}
+	readFile.Close()
 }
 
 func main() {
