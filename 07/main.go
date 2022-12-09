@@ -76,13 +76,13 @@ func solution() {
 
 	// fmt.Printf("%+v\n", dirSizes)
 
-	// sum := 0
-	// for _, dirSize := range dirSizes {
-	// 	if dirSize <= 100000 {
-	// 		sum += dirSize
-	// 	}
-	// }
-	// fmt.Printf("p1: %d\n", sum)
+	sum := 0
+	for _, dirSize := range dirSizes {
+		if dirSize <= 100000 {
+			sum += dirSize
+		}
+	}
+	fmt.Printf("p1: %d\n", sum)
 
 	curUnusedSpace := 70000000 - dirSizes["/"]
 	neededUnusedSpace := 30000000 - curUnusedSpace // assumes 30000000 > curUnusedSpace
