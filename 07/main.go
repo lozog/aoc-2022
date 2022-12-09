@@ -43,7 +43,7 @@ func solution() {
 
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
-		fmt.Printf("%s\n", line)
+		// fmt.Printf("%s\n", line)
 		splitLine := strings.Split(line, " ")
 
 		if splitLine[0] == "$" {
@@ -52,7 +52,7 @@ func solution() {
 			if curCmd == "cd" {
 				dstDir := splitLine[2]
 				curDir = changeDirectory(curDir, dstDir)
-				fmt.Printf("changing to new dir: %s\n", curDir)
+				// fmt.Printf("changing to new dir: %s\n", curDir)
 			}
 		} else if curCmd == "ls" {
 			if splitLine[0] == "dir" {
@@ -84,13 +84,27 @@ func solution() {
 
 	// fmt.Printf("%+v\n", folderSizes)
 
-	sum := 0
-	for _, fileSize := range folderSizes {
-		if fileSize <= 100000 {
-			sum += fileSize
+	// sum := 0
+	// for _, folderSize := range folderSizes {
+	// 	if folderSize <= 100000 {
+	// 		sum += folderSize
+	// 	}
+	// }
+	// fmt.Printf("p1: %d\n", sum)
+
+	curUnusedSpace := 70000000 - folderSizes["/"]
+	neededUnusedSpace := 30000000 - curUnusedSpace // assumes 30000000 > curUnusedSpace
+
+	curMin := ""
+	curMinSize := 0
+	for path, folderSize := range folderSizes {
+		if folderSize >= neededUnusedSpace && (curMin == "" || folderSize < curMinSize) {
+			curMin = path
+			curMinSize = folderSize
 		}
 	}
-	fmt.Printf("p1: %d\n", sum)
+	fmt.Printf("p2: %s\n", curMin)
+	fmt.Printf("p2: %d\n", folderSizes[curMin])
 
 }
 
