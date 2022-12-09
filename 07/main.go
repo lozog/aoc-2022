@@ -39,7 +39,7 @@ func solution() {
 	// curDir := ""
 	curDir := []string{}
 	curCmd := ""
-	folderSizes := make(map[string]int)
+	dirSizes := make(map[string]int)
 
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
@@ -55,56 +55,48 @@ func solution() {
 				// fmt.Printf("changing to new dir: %s\n", curDir)
 			}
 		} else if curCmd == "ls" {
-			if splitLine[0] == "dir" {
-				// curDir = changeDirectory(curDir, splitLine[1])
-				// curDirAsString := dirSliceToString(curDir)
-				// folderSizes[curDirAsString] = 0
-				// fmt.Printf("changing to new dir: %s\n", curDir)
-			} else {
+			if splitLine[0] != "dir" {
 				// record file sizes
-				res, _ := strconv.Atoi(splitLine[0])
-				// curDirAsString := dirSliceToString(curDir)
-				// folderSizes[curDirAsString] += res
 
-				// also add filesize to every parent folder
+				fileSize, _ := strconv.Atoi(splitLine[0])
+
+				// also add filesize to this folder and all its parents
 				dir := curDir
 				for dirSliceToString(dir) != "/" {
-					folderSizes[dirSliceToString(dir)] += res
-					// fmt.Printf("adding %d to %s: %d\n", res, dirSliceToString(dir), folderSizes[dirSliceToString(dir)])
+					dirSizes[dirSliceToString(dir)] += fileSize
 					dir = changeDirectory(dir, "..")
 				}
 				// finally, add it to the root
-				folderSizes["/"] += res
-				// fmt.Printf("adding %d to %s: %d\n", res, "/", folderSizes["/"])
+				dirSizes["/"] += fileSize
 
 			}
 		}
 	}
 	readFile.Close()
 
-	// fmt.Printf("%+v\n", folderSizes)
+	// fmt.Printf("%+v\n", dirSizes)
 
 	// sum := 0
-	// for _, folderSize := range folderSizes {
-	// 	if folderSize <= 100000 {
-	// 		sum += folderSize
+	// for _, dirSize := range dirSizes {
+	// 	if dirSize <= 100000 {
+	// 		sum += dirSize
 	// 	}
 	// }
 	// fmt.Printf("p1: %d\n", sum)
 
-	curUnusedSpace := 70000000 - folderSizes["/"]
+	curUnusedSpace := 70000000 - dirSizes["/"]
 	neededUnusedSpace := 30000000 - curUnusedSpace // assumes 30000000 > curUnusedSpace
 
 	curMin := ""
 	curMinSize := 0
-	for path, folderSize := range folderSizes {
-		if folderSize >= neededUnusedSpace && (curMin == "" || folderSize < curMinSize) {
+	for path, dirSize := range dirSizes {
+		if dirSize >= neededUnusedSpace && (curMin == "" || dirSize < curMinSize) {
 			curMin = path
-			curMinSize = folderSize
+			curMinSize = dirSize
 		}
 	}
 	fmt.Printf("p2: %s\n", curMin)
-	fmt.Printf("p2: %d\n", folderSizes[curMin])
+	fmt.Printf("p2: %d\n", dirSizes[curMin])
 
 }
 
