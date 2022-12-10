@@ -71,17 +71,20 @@ func moveTail(headPos position, tailPos position) position {
 	return position{x: tailPos.x + xDirection, y: tailPos.y + yDirection}
 }
 
-func solution() {
+func solution(ropeLength int) {
 	readFile, _ := os.Open("data.txt")
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 
 	tailVisitedPositions := make(map[string]int)
-	headPos := position{x: 0, y: 0}
-	tailPos := position{x: 0, y: 0}
+	TheRope := []position{}
+	for i := 0; i < ropeLength; i++ {
+		TheRope = append(TheRope, position{x: 0, y: 0})
+	}
+	tailIndex := ropeLength - 1
 
 	// must add starting position of tail
-	positionAsStrIdx := strings.Join([]string{fmt.Sprint(tailPos.x), fmt.Sprint(tailPos.y)}, ",")
+	positionAsStrIdx := strings.Join([]string{fmt.Sprint(TheRope[tailIndex].x), fmt.Sprint(TheRope[tailIndex].y)}, ",")
 	tailVisitedPositions[positionAsStrIdx] += 1
 
 	for fileScanner.Scan() {
@@ -91,25 +94,33 @@ func solution() {
 		direction := lineSplit[0]
 		distance, _ := strconv.Atoi(lineSplit[1])
 
-		for i := 0; i < distance; i++ {
+		// move head according to instructions
+		for j := 0; j < distance; j++ {
 			// fmt.Printf("moving %s\n", direction)
-			headPos = moveHead(headPos, direction)
+			TheRope[0] = moveHead(TheRope[0], direction)
 
-			if !isAdjacent(headPos, tailPos) {
-				tailPos = moveTail(headPos, tailPos)
-				positionAsStrIdx := strings.Join([]string{fmt.Sprint(tailPos.x), fmt.Sprint(tailPos.y)}, ",")
-				tailVisitedPositions[positionAsStrIdx] += 1
+			// propagate movement through rope
+			for i := 0; i < tailIndex; i++ {
+				if !isAdjacent(TheRope[i], TheRope[i+1]) {
+					TheRope[i+1] = moveTail(TheRope[i], TheRope[i+1])
+
+					// record any position the actual tail of the rope goes to
+					if i+1 == tailIndex {
+						positionAsStrIdx := strings.Join([]string{fmt.Sprint(TheRope[i+1].x), fmt.Sprint(TheRope[i+1].y)}, ",")
+						tailVisitedPositions[positionAsStrIdx] += 1
+					}
+				}
 			}
-			// fmt.Printf("headPos: %d, tailPos: %d\n", headPos, tailPos)
 		}
 	}
 	readFile.Close()
 
 	res := len(tailVisitedPositions)
 	// fmt.Println(tailVisitedPositions)
-	fmt.Printf("p1: %d\n", res)
+	fmt.Printf("solution: %d\n", res)
 }
 
 func main() {
-	solution()
+	solution(2)  // p1
+	solution(10) // p2
 }
