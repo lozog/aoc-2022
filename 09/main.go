@@ -104,12 +104,12 @@ func solution(ropeLength int) {
 			TheRope[0] = moveHead(TheRope[0], direction)
 
 			// propagate movement through rope
-			for i := 0; i < tailIndex; i++ {
+			for i := 0; i < tailIndex; i++ { // iterate up to, but not including, the tail
 				if !isAdjacent(TheRope[i], TheRope[i+1]) {
 					TheRope[i+1] = moveTail(TheRope[i], TheRope[i+1])
 
-					// record any position the actual tail of the rope goes to
-					if i+1 == tailIndex {
+					if i+1 == tailIndex { // if the next knot in the rope is the tail
+						// record any position the actual tail of the rope goes to
 						positionAsStrIdx := positionToString(TheRope[i+1])
 						tailVisitedPositions[positionAsStrIdx] += 1
 					}
