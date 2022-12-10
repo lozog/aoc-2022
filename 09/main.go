@@ -71,6 +71,10 @@ func moveTail(headPos position, tailPos position) position {
 	return position{x: tailPos.x + xDirection, y: tailPos.y + yDirection}
 }
 
+func positionToString(pos position) string {
+	return strings.Join([]string{fmt.Sprint(pos.x), fmt.Sprint(pos.y)}, ",")
+}
+
 func solution(ropeLength int) {
 	readFile, _ := os.Open("data.txt")
 	fileScanner := bufio.NewScanner(readFile)
@@ -84,7 +88,7 @@ func solution(ropeLength int) {
 	tailIndex := ropeLength - 1
 
 	// must add starting position of tail
-	positionAsStrIdx := strings.Join([]string{fmt.Sprint(TheRope[tailIndex].x), fmt.Sprint(TheRope[tailIndex].y)}, ",")
+	positionAsStrIdx := positionToString(TheRope[tailIndex])
 	tailVisitedPositions[positionAsStrIdx] += 1
 
 	for fileScanner.Scan() {
@@ -106,7 +110,7 @@ func solution(ropeLength int) {
 
 					// record any position the actual tail of the rope goes to
 					if i+1 == tailIndex {
-						positionAsStrIdx := strings.Join([]string{fmt.Sprint(TheRope[i+1].x), fmt.Sprint(TheRope[i+1].y)}, ",")
+						positionAsStrIdx := positionToString(TheRope[i+1])
 						tailVisitedPositions[positionAsStrIdx] += 1
 					}
 				}
