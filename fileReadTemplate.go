@@ -4,11 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 )
 
-func solution(windowLength int) {
-	readFile, _ := os.Open("data.txt")
+func solution() {
+	readFile, _ := os.Open("test.txt")
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 
