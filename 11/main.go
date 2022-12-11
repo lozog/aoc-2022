@@ -62,7 +62,7 @@ func performOperation(old int, operator, operand string) int {
 	return old * operandInt
 }
 
-func solution() {
+func solution(relief bool) {
 	readFile, _ := os.Open("data.txt")
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
@@ -131,7 +131,16 @@ func solution() {
 	}
 	readFile.Close()
 
-	for round := 0; round < 20; round++ {
+	LCM := funk.Reduce(monkeys, func(acc int, monkey monkey) int {
+		return acc * monkey.test
+	}, 1).(int)
+
+	numRounds := 20
+	if !relief {
+		numRounds = 10000
+	}
+
+	for round := 0; round < numRounds; round++ {
 		for _, monkey := range monkeys {
 			// fmt.Println(monkey)
 			// fmt.Printf("Monkey %d:\n", monkey.id)
@@ -140,8 +149,12 @@ func solution() {
 				monkeys[monkey.id].inspectionCount += 1
 				operationResult := performOperation(item, monkey.operator, monkey.operand)
 				// fmt.Printf("    Worry level is changed to %d\n", operationResult)
-				operationResult = operationResult / 3
-				// fmt.Printf("    Worry level is divided by 3 to %d\n", operationResult)
+				if relief {
+					operationResult = operationResult / 3
+					// fmt.Printf("    Worry level is divided by 3 to %d\n", operationResult)
+				} else {
+					operationResult %= LCM
+				}
 				testTarget := monkey.testFalseTarget
 				if operationResult%monkey.test == 0 {
 					testTarget = monkey.testTrueTarget
@@ -162,9 +175,10 @@ func solution() {
 	}
 	sort.Ints(inspectionCounts)
 	res := inspectionCounts[len(inspectionCounts)-1] * inspectionCounts[len(inspectionCounts)-2]
-	fmt.Printf("p1: %d\n", res)
+	fmt.Printf("solution: %d\n", res)
 }
 
 func main() {
-	solution()
+	solution(true)  // p1
+	solution(false) // p2
 }
